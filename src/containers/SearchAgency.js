@@ -38,6 +38,7 @@ class SearchAgency extends React.Component {
   // TODO: simplify
   handleAgencySearch = (e) => {
     e.preventDefault();
+    message.loading('loading data', 1);
     const addrA = this.state.addrA;
     const addrB = this.state.addrB;
     this.prepareListData(addrA, 'A');
@@ -48,7 +49,7 @@ class SearchAgency extends React.Component {
     geocodeByAddress(addr)
     .then(results => {
       if (!results[0]) {
-        message.warning('Could not find address of ' + who, 1);
+        message.warning('Could not find address of ' + who, 1.5);
         this.clearAorBState(who);
       } else {
         let austin = -1;
@@ -63,7 +64,7 @@ class SearchAgency extends React.Component {
           }
         });
         if (austin === -1 || texas === -1) {
-          message.error('Address of ' + who + ' should be within Austin, TX.', 1);
+          message.error('Address of ' + who + ' should be within Austin, TX.', 1.5);
           this.clearAorBState(who);
         } else {
           return getLatLng(results[0]);
