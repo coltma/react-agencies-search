@@ -1,30 +1,41 @@
 import React from 'react';
-import { compose, withProps } from 'recompose';
-import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
+import { withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
 import { Row, Col } from 'antd';
+import PropTypes from 'prop-types';
 import AgencyList from '../AgencyList/AgencyList';
+import AgencyDetail from '../AgencyDetail/AgencyDetail';
 
-const MyMapComponent = compose(
-  withProps({
-    googleMapURL: "https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry,drawing,places",
-    loadingElement: <div style={{ height: `100%` }} />,
-    containerElement: <div style={{ height: `400px` }} />,
-    mapElement: <div style={{ height: `100%` }} />,
-  }),
-  withScriptjs,
-  withGoogleMap
-)((props) =>
-  <GoogleMap
-    defaultZoom={8}
-    defaultCenter={{ lat: -34.397, lng: 150.644 }}
-  >
-    {props.isMarkerShown && <Marker position={{ lat: -34.397, lng: 150.644 }} onClick={props.onMarkerClick} />}
-  </GoogleMap>
-)
+// center austin 30.3116157,-97.7398554
+// distance: 27km
+
+const MapWithAMarker = withGoogleMap((props) => {
+  const addrPos = {...props.addrPos};
+  console.log(props);
+  console.log(addrPos);
+  return (
+    <GoogleMap
+      defaultZoom={8}
+      defaultCenter={{ lat: 30.3116157, lng: -97.7398554}}
+    >{addrPos.A ? <Marker
+      position={{ lat: addrPos.A.lat, lng:  addrPos.A.lng }}
+      label="A"
+      onClick={(e) => {console.log(e)}}
+    /> : ''}
+    {addrPos.B ? <Marker
+      position={{ lat: addrPos.B.lat, lng:  addrPos.B.lng }}
+      label="B"
+      onClick={(e) => {console.log(e)}}
+    /> : ''}
+    </GoogleMap>
+  );
+});
 
 class GoogleMapComponent extends React.PureComponent {
-  state = {
-    isMarkerShown: false,
+  constructor(props) {
+    super(props);
+    this.state = {
+      isMarkerShown: false,
+    }
   }
 
   componentDidMount() {
@@ -45,17 +56,17 @@ class GoogleMapComponent extends React.PureComponent {
   render() {
     return (
       <div>
-        <Row>
+        <Row  type="flex" justify="center" >
             <Col xs={10} md={10} lg={10}>
-              <MyMapComponent
-                isMarkerShown={this.state.isMarkerShown}
-                onMarkerClick={this.handleMarkerClick}
+              <MapWithAMarker
+                addrPos={this.props.addrPos}
+                containerElement={<div style={{ height: `400px` }} />}
+                mapElement={<div style={{ height: `100%` }} />}
               />
             </Col>
-            <Col xs={5} md={5} lg={5}>
+            <Col xs={5} md={5} lg={5} style={{marginLeft: 5}}>
               <Row>
-                <p>Introduction</p>
-
+                <AgencyDetail/>
               </Row>
               <Row>
                 <AgencyList />
@@ -67,6 +78,10 @@ class GoogleMapComponent extends React.PureComponent {
 
     )
   }
+}
+
+GoogleMapComponent.propTypes = {
+  addrPos: PropTypes.object,
 }
 
 export default GoogleMapComponent;
