@@ -44,7 +44,9 @@ const AddressAutocomplete = (props) => {
         <Button style={{
             height: 26,
             textAlign: 'center'
-          }}><Icon type="close"/></Button>
+          }}
+          onClick={(e) => props.handleClearInput(e, inputName)}
+          ><Icon type="close"/></Button>
       </Col>
     </Row>
     {

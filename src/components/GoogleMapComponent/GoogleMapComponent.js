@@ -24,7 +24,7 @@ const MapWithAMarker = withGoogleMap((props) => {
 
   return (
     <GoogleMap
-      defaultZoom={8}
+      defaultZoom={10}
       defaultCenter={{ lat: 30.3116157, lng: -97.7398554}}
     >{addrPos.A ? <Marker
       position={{ lat: addrPos.A.lat, lng:  addrPos.A.lng }}
@@ -46,7 +46,7 @@ class GoogleMapComponent extends React.PureComponent {
     super(props);
     this.state = {
       isMarkerShown: false,
-      mergedAgencyList: [],
+      agency:{}
     }
   }
 
@@ -65,6 +65,12 @@ class GoogleMapComponent extends React.PureComponent {
   //   this.delayedShowMarker()
   // }
 
+  handleAgencySelect = (e, agency) => {
+    e.preventDefault();
+    console.log('get agency' + agency);
+    this.setState({agency});
+  }
+
   render() {
     let list = [];
 
@@ -79,12 +85,15 @@ class GoogleMapComponent extends React.PureComponent {
                 mapElement={<div style={{ height: `100%` }} />}
               />
             </Col>
-            <Col xs={5} md={5} lg={5} style={{marginLeft: 5}}>
+            <Col xs={7} md={7} lg={7} style={{marginLeft: 5}}>
               <Row>
-                <AgencyDetail/>
+                <AgencyDetail
+                  agency={this.state.agency}/>
               </Row>
-              <Row>
-                <AgencyList sortedAgencyList={this.props.sortedAgencyList} />
+              <Row >
+                <AgencyList
+                  sortedAgencyList={this.props.sortedAgencyList}
+                  handleAgencySelect={this.handleAgencySelect}/>
               </Row>
             </Col>
         </Row>

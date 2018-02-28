@@ -4,25 +4,15 @@ import reqwest from 'reqwest';
 import InfiniteScroll from 'react-infinite-scroller';
 import './AgencyList.css';
 
-const fakeDataUrl = 'https://randomuser.me/api/?results=5&inc=name,gender,email,nat&noinfo';
-
 class AgencyList extends React.Component {
   state = {
     data: [],
     loading: false,
     hasMore: true,
   }
-  // getData = (callback) => {
-  //   reqwest({
-  //     url: fakeDataUrl,
-  //     type: 'json',
-  //     method: 'get',
-  //     contentType: 'application/json',
-  //     success: (res) => {
-  //       callback(res);
-  //     },
-  //   });
-  // }
+  getData = (callback) => {
+    callback(this.state.data);
+  }
   componentWillMount() {
     // this.getData((res) => {
     //   this.setState({
@@ -35,8 +25,12 @@ class AgencyList extends React.Component {
     this.setState({
       loading: true,
     });
+    if (data.length === 0) {
+      message.info('Seems no agency available', 1);
+      return;
+    }
     if (data.length > 14) {
-      message.warning('Agency List loaded all');
+      message.warning('Agency List loaded all', 1);
       this.setState({
         hasMore: false,
         loading: false,
@@ -66,7 +60,7 @@ class AgencyList extends React.Component {
             renderItem={(item, index) => (
               <List.Item key={item.id}>
                 <List.Item.Meta
-                  title={<a href="https://ant.design">{`${index + 1}.`}{item.name}</a>}
+                  title={<a onClick={(e) => this.props.handleAgencySelect(e, item)}>{`${index + 1}) `}{item.name}</a>}
                   description={item.getDistance().toFixed(2)}
                 />
               </List.Item>

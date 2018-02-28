@@ -7,7 +7,9 @@ import MyGoogleMap from '../components/MyGoogleMap/MyGoogleMap';
 import AgencyItem from '../classes/AgencyItem';
 import { getDistance } from '../utils/GeoHelper.js';
 import reqwest from 'reqwest';
+import { message } from 'antd';
 
+const MIN_RADIUS = 10; //MILES
 class SearchAgency extends React.Component {
   constructor(props) {
     super(props)
@@ -39,25 +41,35 @@ class SearchAgency extends React.Component {
     const addrA = this.state.addrA;
     const addrB = this.state.addrB;
     this.prepareListData(addrA, 'A');
-    geocodeByAddress(addrB)
-    .then(results => getLatLng(results[0]))
-    .then(latLng => {
-      const addrPos = {
-        ...this.state.addrPos
-      };
-      console.log('Success: B', latLng);
-      addrPos['B'] = {
-        lat: latLng.lat,
-        lng: latLng.lng
-      }
-      this.setState({addrPos});
-      this.getNearByPlaces('agencyListB', latLng);
-    }).catch(error => console.error('Error:', error));
+    this.prepareListData(addrB, 'B');
   }
   // who = 'A' or 'B'
   prepareListData = (addr, who) => {
     geocodeByAddress(addr)
-    .then(results => getLatLng(results[0]))
+    .then(results => {
+      if (!results[0]) {
+        message.warning('Could not find address of ' + who, 1);
+        this.clearAorBState(who);
+      } else {
+        let austin = -1;
+        let texas = -1;
+        results[0].address_components.map((obj) => {
+          console.log(JSON.stringify(obj));
+          if (Object.values(obj).indexOf('Austin') !== -1) {
+            austin = 1;
+          }
+          if (Object.values(obj).indexOf('Texas') !== -1) {
+            texas = 1;
+          }
+        });
+        if (austin === -1 || texas === -1) {
+          message.error('Address of ' + who + ' should be within Austin, TX.', 1);
+          this.clearAorBState(who);
+        } else {
+          return getLatLng(results[0]);
+        }
+      }
+    })
     .then(latLng => {
       const addrPos = {
         ...this.state.addrPos
@@ -70,6 +82,28 @@ class SearchAgency extends React.Component {
       this.setState({addrPos});
       this.getNearByPlaces('agencyList' + who, latLng);
     }).catch(error => console.error('Error:', error));
+  }
+
+  clearAorBState = (who) => {
+    this.setState((prevState) => {
+      if (who === 'A') {
+        const addrPos = { ...prevState.addrPos };
+        addrPos['A'] = {};
+        return  {
+          addrA: '',
+          agencyListA: [],
+          sortedAgencyList: [],
+        };
+      } else if (who === 'B') {
+        const addrPos = { ...prevState.addrPos };
+        addrPos['B'] = {};
+        return {
+         addrB: '',
+         agencyListB: [],
+         sortedAgencyList: [],
+       };
+      }
+    });
   }
 
   getNearByPlaces = (listName, latLng) => {
@@ -120,9 +154,19 @@ class SearchAgency extends React.Component {
     console.log('before sort:' + dedupedList);
     this.sortListByDistance(dedupedList);
     console.log('after sort:' + dedupedList);
+    let finalList = this.withinDistance(dedupedList);
+    console.log('finalList' + finalList);
     this.setState((prevState) => {
-        return {sortedAgencyList: dedupedList}
+        return {sortedAgencyList: finalList}
     });
+  }
+
+  withinDistance = (list) => {
+    let res = [];
+    list.filter(item => {
+      return Number.parseFloat(item.getDistance()) <= Number.parseFloat(MIN_RADIUS)
+    }).map(item => res.push(item));
+    return res;
   }
 
   completementDistance = (list) => {
@@ -158,18 +202,12 @@ class SearchAgency extends React.Component {
     list.sort((left, right) => {
       const dl = Number.parseFloat(left.getDistance());
       const dr = Number.parseFloat(right.getDistance());
-      console.log(dl + ' ? ' + dr);
       if (dl < dr) {
-        console.log(-1);
         return -1;
       }
       if (dl > dr) {
-        console.log(1);
-
         return 1;
       }
-      console.log(0);
-
       return 0;
     });
   }
@@ -199,7 +237,7 @@ class SearchAgency extends React.Component {
     let mergedList = []
 
     while (a < listA.length && b < listB.length) {
-        if (listA[a].id == listB[b].id) {
+        if (listA[a].id === listB[b].id) {
           mergedList[i++] = listA[a];
           a++;
           b++;
@@ -216,6 +254,15 @@ class SearchAgency extends React.Component {
       mergedList[i++] = listB[b++];
     }
     return mergedList;
+  }
+
+  handleClearInput = (e, who) => {
+    e.preventDefault();
+    if (who === 'A') {
+      this.setState({addrA: ''});
+    } else if (who === 'B') {
+      this.setState({addrB: ''});
+    }
   }
 
   render() {
@@ -238,9 +285,12 @@ class SearchAgency extends React.Component {
     //   A: this.state.addrA,
     //   B: this.state.addrB
     // };
-    return (<div>
+    return (<div style={{paddingTop: 20}}>
       <form>
-        <AddressAutocomplete inputProps={inputProps} handleAgencySearch={this.handleAgencySearch}/>
+        <AddressAutocomplete
+          inputProps={inputProps}
+          handleAgencySearch={this.handleAgencySearch}
+          handleClearInput={this.handleClearInput}/>
       </form>
       <GoogleMapComponent addrPos={this.state.addrPos}
         sortedAgencyList={this.state.sortedAgencyList}
