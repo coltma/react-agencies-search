@@ -61,7 +61,7 @@ class AgencyList extends React.Component {
               <List.Item key={item.id}>
                 <List.Item.Meta
                   title={<a onClick={(e) => this.props.handleAgencySelect(e, item)}>{`${index + 1}) `}{item.name}</a>}
-                  description={item.getDistance().toFixed(2)}
+                  description={`${item.getDistance().toFixed(2)}miles`}
                 />
               </List.Item>
             )}
