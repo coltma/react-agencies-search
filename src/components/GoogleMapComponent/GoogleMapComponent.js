@@ -4,6 +4,7 @@ import { Row, Col } from 'antd';
 import PropTypes from 'prop-types';
 import AgencyList from '../AgencyList/AgencyList';
 import AgencyDetail from '../AgencyDetail/AgencyDetail';
+import './GoogleMapComponent.css';
 
 // center austin 30.3116157,-97.7398554
 // distance: 27km
@@ -76,7 +77,7 @@ class GoogleMapComponent extends React.PureComponent {
 
     return (
       <div>
-        <Row  type="flex" justify="center" >
+        <Row  type="flex" justify="center" className="animate-pop-in">
             <Col xs={10} md={10} lg={10}>
               <MapWithAMarker
                 addrPos={this.props.addrPos}
