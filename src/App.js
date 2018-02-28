@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import SearchAgency from './containers/SearchAgency';
 import './App.css';
 import { Layout } from 'antd';
-const { Header, Footer, Sider, Content } = Layout;
+const { Header, Footer, Content } = Layout;
 
 class App extends Component {
   render() {
