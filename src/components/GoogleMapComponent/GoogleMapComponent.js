@@ -12,6 +12,16 @@ const MapWithAMarker = withGoogleMap((props) => {
   const addrPos = {...props.addrPos};
   console.log(props);
   console.log(addrPos);
+  console.log(props.sortedAgencyList);
+  const agencies = props.sortedAgencyList.map((agencyItem, index) =>
+      <Marker
+        key={agencyItem.id}
+        position={{ lat: agencyItem.location.lat, lng: agencyItem.location.lng }}
+        label={`${index + 1}`}
+        onClick={(e) => {console.log(e)}}
+      />
+  );
+
   return (
     <GoogleMap
       defaultZoom={8}
@@ -26,6 +36,7 @@ const MapWithAMarker = withGoogleMap((props) => {
       label="B"
       onClick={(e) => {console.log(e)}}
     /> : ''}
+    {agencies}
     </GoogleMap>
   );
 });
@@ -35,31 +46,35 @@ class GoogleMapComponent extends React.PureComponent {
     super(props);
     this.state = {
       isMarkerShown: false,
+      mergedAgencyList: [],
     }
   }
 
-  componentDidMount() {
-    this.delayedShowMarker()
-  }
+  // componentDidMount() {
+  //   this.delayedShowMarker()
+  // }
 
-  delayedShowMarker = () => {
-    setTimeout(() => {
-      this.setState({ isMarkerShown: true })
-    }, 3000)
-  }
-
-  handleMarkerClick = () => {
-    this.setState({ isMarkerShown: false })
-    this.delayedShowMarker()
-  }
+  // delayedShowMarker = () => {
+  //   setTimeout(() => {
+  //     this.setState({ isMarkerShown: true })
+  //   }, 3000)
+  // }
+  //
+  // handleMarkerClick = () => {
+  //   this.setState({ isMarkerShown: false })
+  //   this.delayedShowMarker()
+  // }
 
   render() {
+    let list = [];
+
     return (
       <div>
         <Row  type="flex" justify="center" >
             <Col xs={10} md={10} lg={10}>
               <MapWithAMarker
                 addrPos={this.props.addrPos}
+                sortedAgencyList={this.props.sortedAgencyList}
                 containerElement={<div style={{ height: `400px` }} />}
                 mapElement={<div style={{ height: `100%` }} />}
               />
@@ -69,7 +84,7 @@ class GoogleMapComponent extends React.PureComponent {
                 <AgencyDetail/>
               </Row>
               <Row>
-                <AgencyList />
+                <AgencyList sortedAgencyList={this.props.sortedAgencyList} />
               </Row>
             </Col>
         </Row>
@@ -82,6 +97,7 @@ class GoogleMapComponent extends React.PureComponent {
 
 GoogleMapComponent.propTypes = {
   addrPos: PropTypes.object,
+  agencyList: PropTypes.array,
 }
 
 export default GoogleMapComponent;

@@ -65,7 +65,7 @@ const AddressAutocomplete = (props) => {
         {inputs}
       </Col>
       <Col>
-        <Button disabled={ !addresses.A || !addresses.B } type="primary" onClick={props.handleAgencySearch}><Icon type="search"/></Button>
+        <Button disabled={ !addresses.A || !addresses.B } type="primary" onClick={(e) => props.handleAgencySearch(e)}><Icon type="search"/></Button>
       </Col>
     </Row>
   </div>);

@@ -12,31 +12,31 @@ class AgencyList extends React.Component {
     loading: false,
     hasMore: true,
   }
-  getData = (callback) => {
-    reqwest({
-      url: fakeDataUrl,
-      type: 'json',
-      method: 'get',
-      contentType: 'application/json',
-      success: (res) => {
-        callback(res);
-      },
-    });
-  }
+  // getData = (callback) => {
+  //   reqwest({
+  //     url: fakeDataUrl,
+  //     type: 'json',
+  //     method: 'get',
+  //     contentType: 'application/json',
+  //     success: (res) => {
+  //       callback(res);
+  //     },
+  //   });
+  // }
   componentWillMount() {
-    this.getData((res) => {
-      this.setState({
-        data: res.results,
-      });
-    });
+    // this.getData((res) => {
+    //   this.setState({
+    //     data: res.results,
+    //   });
+    // });
   }
   handleInfiniteOnLoad = () => {
-    let data = this.state.data;
+    let data = this.props.sortedAgencyList;
     this.setState({
       loading: true,
     });
     if (data.length > 14) {
-      message.warning('Infinite List loaded all');
+      message.warning('Agency List loaded all');
       this.setState({
         hasMore: false,
         loading: false,
@@ -62,12 +62,12 @@ class AgencyList extends React.Component {
           useWindow={false}
         >
           <List
-            dataSource={this.state.data}
-            renderItem={item => (
+            dataSource={this.props.sortedAgencyList}
+            renderItem={(item, index) => (
               <List.Item key={item.id}>
                 <List.Item.Meta
-                  title={<a href="https://ant.design">{item.name.last}</a>}
-                  description={item.email}
+                  title={<a href="https://ant.design">{`${index + 1}.`}{item.name}</a>}
+                  description={item.getDistance().toFixed(2)}
                 />
               </List.Item>
             )}
