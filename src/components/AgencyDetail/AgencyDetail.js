@@ -7,7 +7,7 @@ const AgencyDetail = (props) => {
       {props.agency['id'] ?
       (<Card style={{ height: 150, backgroundColor: 'inherit' }}>
           {props.agency['name'] ? <p>{props.agency['name']}</p> : ''}
-          {props.agency['rating'] ? <Rate allowHalf defaultValue={props.agency['rating']} /> : ''}
+          {props.agency['rating'] ? <Rate disabled allowHalf defaultValue={props.agency['rating']} /> : ''}
           {props.agency['vicinity'] ? <p>{props.agency['vicinity']}</p> : ''}
           {props.agency['id'] ? <p>{props.agency.getDistance().toFixed(2)} miles</p> : ''}
         </Card>
