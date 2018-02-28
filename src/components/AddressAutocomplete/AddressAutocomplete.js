@@ -1,5 +1,5 @@
 import React from 'react';
-import PlacesAutocomplete, {geocodeByAddress, getLatLng} from 'react-places-autocomplete';
+import PlacesAutocomplete from 'react-places-autocomplete';
 import {Row, Col} from 'antd';
 import {Button, Icon} from 'antd';
 
@@ -71,29 +71,6 @@ const AddressAutocomplete = (props) => {
       </Col>
     </Row>
   </div>);
-}
-
-// standard Google address: xxx YYY Road, Austin, TX, USA
-const configParams = {
-  city: 'Austin',
-  state: 'TX',
-  minLen: 3,
-};
-
-// Only search within Austin
-const validAddress = (address) => {
-  if (!address) {
-    return false;
-  }
-  const items = address.split(',');
-  const test = (
-    items.length >= configParams.minLen
-    && items[items.length - 2]
-    .trim().toUpperCase() === configParams.state.toUpperCase()
-    && items[items.length - 3]
-    .trim().toUpperCase() === configParams.city.toUpperCase()
-  );
-  console.log('valid:' + test);
 }
 
 export default AddressAutocomplete;

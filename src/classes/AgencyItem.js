@@ -1,8 +1,8 @@
 export default class AgencyItem {
+  // this.lat = data.geometry.location.lat;
+  // this.lng = data.geometry.location.lng;
   constructor (data) {
     this.location = data.geometry.location
-    // this.lat = data.geometry.location.lat;
-    // this.lng = data.geometry.location.lng;
     this.id = data.id;
     this.name = data.name;
     //opening_hours = { "open_now" : false, "weekday_text" : [] }

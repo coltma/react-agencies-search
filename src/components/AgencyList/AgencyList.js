@@ -1,6 +1,5 @@
 import React from 'react';
 import { List, message, Spin } from 'antd';
-import reqwest from 'reqwest';
 import InfiniteScroll from 'react-infinite-scroller';
 import './AgencyList.css';
 
@@ -13,13 +12,7 @@ class AgencyList extends React.Component {
   getData = (callback) => {
     callback(this.state.data);
   }
-  componentWillMount() {
-    // this.getData((res) => {
-    //   this.setState({
-    //     data: res.results,
-    //   });
-    // });
-  }
+
   handleInfiniteOnLoad = () => {
     let data = this.props.sortedAgencyList;
     this.setState({
@@ -66,7 +59,6 @@ class AgencyList extends React.Component {
               </List.Item>
             )}
           >
-            {this.state.loading && this.state.hasMore && <Spin className="demo-loading" />}
           </List>
         </InfiniteScroll>
       </div>

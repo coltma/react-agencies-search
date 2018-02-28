@@ -51,21 +51,6 @@ class GoogleMapComponent extends React.PureComponent {
     }
   }
 
-  // componentDidMount() {
-  //   this.delayedShowMarker()
-  // }
-
-  // delayedShowMarker = () => {
-  //   setTimeout(() => {
-  //     this.setState({ isMarkerShown: true })
-  //   }, 3000)
-  // }
-  //
-  // handleMarkerClick = () => {
-  //   this.setState({ isMarkerShown: false })
-  //   this.delayedShowMarker()
-  // }
-
   handleAgencySelect = (e, agency) => {
     e.preventDefault();
     console.log('get agency' + agency);
@@ -73,8 +58,6 @@ class GoogleMapComponent extends React.PureComponent {
   }
 
   render() {
-    let list = [];
-
     return (
       <div>
         <Row  type="flex" justify="center" className="animate-pop-in">
@@ -98,7 +81,6 @@ class GoogleMapComponent extends React.PureComponent {
               </Row>
             </Col>
         </Row>
-
       </div>
 
     )
