@@ -3,6 +3,8 @@ import PlacesAutocomplete from 'react-places-autocomplete';
 import {Row, Col} from 'antd';
 import {Button, Icon} from 'antd';
 
+// center austin 30.3116157,-97.7398554
+// distance: 27km
 const AddressAutocomplete = (props) => {
   const styles = {
     input: {
@@ -31,12 +33,22 @@ const AddressAutocomplete = (props) => {
     { suggestion }) => (<div><i className="fa fa-map-marker"/>{suggestion}</div>
   );
 
+  // these options will bias the autocomplete predictions toward Austin, TX
+  // with a radius of 27000 meters,
+  // and limit the results to addresses only
+  const options = {
+    location: new window.google.maps.LatLng(30.3116157,-97.7398554),
+    radius: 27000,
+    types: ['address']
+  }
+
   const inputs = ['A', 'B'].map((inputName) =>
   <div key={inputName}>
     <Row align="middle">
       <Col span={20}>
         <PlacesAutocomplete inputProps={props.inputProps[inputName]}
-          styles={styles} renderSuggestion={renderSuggestion}/>
+          styles={styles} renderSuggestion={renderSuggestion}
+          options={options}/>
       </Col>
       <Col span={1} style={{
           marginLeft: 2
