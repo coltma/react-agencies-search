@@ -54,13 +54,15 @@ class SearchAgency extends React.Component {
         let austin = -1;
         let texas = -1;
         results[0].address_components.map((obj) => {
-          if (Object.values(obj).indexOf('Austin') !== -1) {
+          const vals = Object.keys(obj).map(key =>
+            obj[key]
+          );
+          if (vals.indexOf('Austin') !== -1) {
             austin = 1;
           }
-          if (Object.values(obj).indexOf('Texas') !== -1) {
+          if (vals.indexOf('Texas') !== -1) {
             texas = 1;
           }
-
         });
         if (austin === -1 || texas === -1) {
           message.error('Address of ' + who + ' should be within Austin, TX.', 1.5);
@@ -84,7 +86,7 @@ class SearchAgency extends React.Component {
       }
     }).catch(error => {
       console.error('Error:', error);
-      message.error('Locate Address fail.', 1.25);
+      message.error('Locate Address fail.' + error, 1.25);
     });
   }
 
