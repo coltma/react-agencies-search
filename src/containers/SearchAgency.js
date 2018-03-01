@@ -34,7 +34,6 @@ class SearchAgency extends React.Component {
     this.setState({addrB})
   }
 
-  // TODO: simplify
   handleAgencySearch = (e) => {
     e.preventDefault();
     message.loading('loading data', 1);
@@ -75,7 +74,6 @@ class SearchAgency extends React.Component {
       const addrPos = {
         ...this.state.addrPos
       };
-      console.log('Success' + who + ':', latLng);
       if (latLng) {
         addrPos[who] = {
           lat: latLng.lat,
@@ -117,7 +115,6 @@ class SearchAgency extends React.Component {
    let url = api + 'location=' + latLng.lat + ',' + latLng.lng;
    url += '&type=real_estate_agency&radius=16093.4';
    this.getData(url, (res) => {
-     console.log(res);
      this.loadAgencyList(listName, res, latLng);
    })
   }
@@ -149,7 +146,6 @@ class SearchAgency extends React.Component {
       }
       tmpList.push(agencyItem);
     })
-    console.log('loadAgencyList:' + listName + ',' + tmpList.length)
     this.setState((prevState) => {
       return {[listName]: tmpList};
     });
@@ -286,9 +282,11 @@ class SearchAgency extends React.Component {
         <AddressAutocomplete
           inputProps={inputProps}
           handleAgencySearch={this.handleAgencySearch}
-          handleClearInput={this.handleClearInput}/>
+          handleClearInput={this.handleClearInput}
+        />
       </form>
-      <GoogleMapComponent addrPos={this.state.addrPos}
+      <GoogleMapComponent
+        addrPos={this.state.addrPos}
         sortedAgencyList={this.state.sortedAgencyList}
       />
     </div>);

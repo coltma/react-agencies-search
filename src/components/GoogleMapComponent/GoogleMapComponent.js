@@ -11,9 +11,6 @@ import './GoogleMapComponent.css';
 
 const MapWithAMarker = withGoogleMap((props) => {
   const addrPos = {...props.addrPos};
-  console.log(props);
-  console.log(addrPos);
-  console.log(props.sortedAgencyList);
   const agencies = props.sortedAgencyList.map((agencyItem, index) =>
       <Marker
         key={agencyItem.id}
@@ -53,7 +50,6 @@ class GoogleMapComponent extends React.PureComponent {
 
   handleAgencySelect = (e, agency) => {
     e.preventDefault();
-    console.log('get agency' + agency);
     this.setState({agency});
   }
 
