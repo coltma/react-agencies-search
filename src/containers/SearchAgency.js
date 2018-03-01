@@ -76,13 +76,18 @@ class SearchAgency extends React.Component {
         ...this.state.addrPos
       };
       console.log('Success' + who + ':', latLng);
-      addrPos[who] = {
-        lat: latLng.lat,
-        lng: latLng.lng
+      if (latLng) {
+        addrPos[who] = {
+          lat: latLng.lat,
+          lng: latLng.lng
+        }
+        this.setState({addrPos});
+        this.getNearByPlaces('agencyList' + who, latLng);
       }
-      this.setState({addrPos});
-      this.getNearByPlaces('agencyList' + who, latLng);
-    }).catch(error => console.error('Error:', error));
+    }).catch(error => {
+      console.error('Error:', error);
+      message.error('Locate Address fail.', 1.25);
+    });
   }
 
   clearAorBState = (who) => {
@@ -108,9 +113,11 @@ class SearchAgency extends React.Component {
   }
 
   getNearByPlaces = (listName, latLng) => {
-   const api = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?key=AIzaSyAUJVDlc0d1mmBRAndczwkuF9xQ5RMrIcY&type=real_estate_agency&radius=16093.4";
-   const url = api + '&location=' + latLng.lat + ',' + latLng.lng;
+   const api = "http://cs571.us-east-1.elasticbeanstalk.com/googleplacenear?";
+   let url = api + 'location=' + latLng.lat + ',' + latLng.lng;
+   url += '&type=real_estate_agency&radius=16093.4';
    this.getData(url, (res) => {
+     console.log(res);
      this.loadAgencyList(listName, res, latLng);
    })
   }
@@ -126,6 +133,7 @@ class SearchAgency extends React.Component {
       },
       error: (err) => {
         console.log(err);
+        message.error('Fet google places data fail.', 1.25);
       }
     });
   }
